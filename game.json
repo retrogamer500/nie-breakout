@@ -1,0 +1,55 @@
+{
+  "resources": {
+    "images": [
+      {
+        "flipVertically": false,
+        "filename": "data/images/ball.png",
+        "key": "ball.png",
+        "group": 0
+      },
+      {
+        "flipVertically": false,
+        "filename": "data/images/brick.png",
+        "key": "brick.png",
+        "group": 0
+      },
+      {
+        "flipVertically": false,
+        "filename": "data/images/paddle.png",
+        "key": "paddle.png",
+        "group": 0
+      }
+    ],
+    "sprites": [
+      {
+        "imageKey": "ball.png",
+        "frameWidth": 8.0,
+        "duration": 100.0,
+        "offsetX": 4.0,
+        "offsetY": 4.0,
+        "key": "ball.png",
+        "group": 0
+      }
+    ],
+    "fonts": [
+      {
+        "size": 32.0,
+        "filename": "data/fonts/roboto.ttf",
+        "key": "roboto",
+        "group": 0
+      }
+    ],
+    "audio": [
+      {
+        "filename": "data/audio/boom.ogg",
+        "key": "boom.ogg",
+        "group": 0
+      },
+      {
+        "filename": "data/audio/bounce.ogg",
+        "key": "bounce.ogg",
+        "group": 0
+      }
+    ]
+  }
+}
