@@ -49,8 +49,8 @@ public class Paddle extends Entity2D<BreakoutGame, BreakoutState> {
             velocityX = 0;
         }
 
-        if(getX() > 640 - 64) {
-            setX(640 - 64);
+        if(getX() > scene.getWidth() - getSprite().getWidth()) {
+            setX(scene.getWidth() - getSprite().getWidth());
             velocityX = 0;
         }
     }

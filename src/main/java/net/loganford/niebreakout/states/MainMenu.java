@@ -15,7 +15,7 @@ public class MainMenu extends GameState<BreakoutGame> {
         super.beginState(game);
         setStretch(true);
         getView().setWidth(640);
-        getView().setWidth(480);
+        getView().setHeight(480);
 
         menuFont = game.getFontManager().get("roboto");
     }

@@ -42,7 +42,7 @@ public class Ball extends Entity2D<BreakoutGame, BreakoutState> {
             {
                 float deltaX = velocity.x * speed * delta / 100f;
                 Brick brick = getCollisionAt(Brick.class, getX() + deltaX, getY());
-                if (brick == null && getX() + deltaX > 0 && getX() + deltaX < 640) {
+                if (brick == null && getX() + deltaX > 0 && getX() + deltaX < scene.getWidth()) {
                     setX(getX() + deltaX);
                 } else {
                     velocity.x *= -1;
@@ -85,7 +85,7 @@ public class Ball extends Entity2D<BreakoutGame, BreakoutState> {
             destroy();
             //Add a new one
             Ball ball = new Ball();
-            ball.setPos(640/2f, 480-48);
+            ball.setPos(scene.getWidth()/2f, scene.getHeight()-48);
             scene.add(ball);
         }
     }

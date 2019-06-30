@@ -10,6 +10,9 @@ public class BreakoutState extends Scene<BreakoutGame> {
     @Override
     public void beginState(BreakoutGame game) {
         super.beginState(game);
+        setStretch(true);
+        getView().setWidth(640);
+        getView().setHeight(480);
 
         for(int j = 0; j < 9; j++) {
             for (int i = j; i < 18 - j; i++) {
@@ -20,11 +23,11 @@ public class BreakoutState extends Scene<BreakoutGame> {
         }
 
         Ball ball = new Ball();
-        ball.setPos(640/2f, 480-48);
+        ball.setPos(getWidth()/2f, getHeight()-48);
         add(ball);
 
         Paddle paddle = new Paddle();
-        paddle.setPos((640-64)/2f, 480-32);
+        paddle.setPos((getWidth()-64)/2f, getHeight()-32);
         add(paddle);
     }
 }
