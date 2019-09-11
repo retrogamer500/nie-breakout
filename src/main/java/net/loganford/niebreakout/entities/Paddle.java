@@ -5,9 +5,8 @@ import net.loganford.niebreakout.states.BreakoutState;
 import net.loganford.noideaengine.Input;
 import net.loganford.noideaengine.graphics.Image;
 import net.loganford.noideaengine.graphics.Sprite;
-import net.loganford.noideaengine.state.entity.Entity2D;
 
-public class Paddle extends Entity2D<BreakoutGame, BreakoutState> {
+public class Paddle extends Solid {
 
     //Units are in pixels per second
     private float velocityX = 0;
@@ -56,6 +55,6 @@ public class Paddle extends Entity2D<BreakoutGame, BreakoutState> {
     }
 
     public float getWidth() {
-        return getSprite().getFrames().get(0).getImage().getWidth();
+        return getSprite().getWidth();
     }
 }

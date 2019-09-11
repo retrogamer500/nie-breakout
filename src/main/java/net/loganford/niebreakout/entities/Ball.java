@@ -3,17 +3,17 @@ package net.loganford.niebreakout.entities;
 import net.loganford.niebreakout.BreakoutGame;
 import net.loganford.niebreakout.states.BreakoutState;
 import net.loganford.noideaengine.audio.Audio;
-import net.loganford.noideaengine.state.entity.Entity2D;
+import net.loganford.noideaengine.shape.SweepResult;
+import net.loganford.noideaengine.state.entity.Entity;
 import net.loganford.noideaengine.utils.math.MathUtils;
-import org.joml.Vector2f;
+import org.joml.Vector3f;
 
-public class Ball extends Entity2D<BreakoutGame, BreakoutState> {
-    private Vector2f velocity = new Vector2f();
-    private float speed = 0;
+public class Ball extends Entity<BreakoutGame, BreakoutState> {
+    private Vector3f velocity = new Vector3f();
+    private Vector3f nextPosition = new Vector3f();
 
     private Audio boomSound;
     private Audio bounceSound;
-
 
     @Override
     public void onCreate(BreakoutGame game, BreakoutState scene) {
@@ -27,9 +27,9 @@ public class Ball extends Entity2D<BreakoutGame, BreakoutState> {
         createMaskFromSprite();
         //Create an event that will happen in one second that will set the direction and velocity of the ball
         getAlarms().add(1000, ()-> {
-            speed = 50;
             float direction = MathUtils.randRangeF(MathUtils.PI/4f, 3*MathUtils.PI/4f);
-            velocity.set((float)(Math.cos(direction)), (float)(-Math.sin(direction)));
+            //Set initial velocity to be 128 pixels per second
+            velocity.set(128, 0, 0).rotateZ(-direction);
         });
     }
 
@@ -37,49 +37,46 @@ public class Ball extends Entity2D<BreakoutGame, BreakoutState> {
     public void step(BreakoutGame game, BreakoutState scene, float delta) {
         super.step(game, scene, delta);
 
-        if(speed != 0) {
-            //Move X
-            {
-                float deltaX = velocity.x * speed * delta / 100f;
-                Brick brick = getCollisionAt(Brick.class, getX() + deltaX, getY());
-                if (brick == null && getX() + deltaX > 0 && getX() + deltaX < scene.getWidth()) {
-                    setX(getX() + deltaX);
-                } else {
-                    velocity.x *= -1;
+        if(velocity.lengthSquared() != 0) {
+            //Obtain the next position of the ball. We need to multiply by delta time to account for varying frame rates
+            nextPosition.set(velocity).mul(delta/1000f);
+            //Find if there are any collisions between this position and the desired position
+            SweepResult result = sweep(nextPosition, Solid.class);
+            move(result);
+            if(result.collides()) {
+                if(result.getEntity() instanceof Brick) {
+                    //Handle collision with brick
+                    result.getEntity().destroy();
+                    //"Bounce" the velocity vector
+                    result.reflect(velocity);
+                    //Make ball move five percent faster
+                    velocity.mul(1.05f);
                     bounceSound.play();
-                    if (brick != null) {
-                        brick.destroy();
-                    }
                 }
-            }
-
-            //Move Y
-            {
-                float deltaY = velocity.y * speed * delta / 100f;
-                Brick brick = getCollisionAt(Brick.class, getX(), getY() + deltaY);
-                if (brick == null && getY() + deltaY > 0) {
-                    setY(getY() + deltaY);
-                } else {
-                    velocity.y *= -1;
+                else if(result.getEntity() instanceof Paddle && velocity.y > 0) {
+                    //Handle collision with paddle
+                    Paddle paddle = (Paddle) result.getEntity();
+                    float offset = (getX() - paddle.getX()) / paddle.getWidth();
+                    float angle = MathUtils.lerp(3*MathUtils.PI/4f, MathUtils.PI/4f, MathUtils.clamp(0, 1, offset));
+                    velocity.set(velocity.length(), 0f, 0f).rotateZ(-angle);
                     bounceSound.play();
-                    if(brick != null) {
-                        brick.destroy();
-                    }
                 }
-            }
-
-            //Handle collisions with paddle
-            Paddle paddle = getCollision(Paddle.class);
-            if(paddle != null && velocity.y > 0) {
-                float offset = (getX() - paddle.getX()) / paddle.getWidth();
-                float angle = MathUtils.lerp(3*MathUtils.PI/4f, MathUtils.PI/4f, MathUtils.clamp(0, 1, offset));
-                velocity.set((float)(Math.cos(angle)), (float)(-Math.sin(angle)));
-                bounceSound.play();
             }
         }
 
-        if(getY() > 650) {
-            //Ball is off the screen
+        //Bounce the ball along the three sides of the screen
+        if(getY() < 0 && velocity.y < 0) {
+            velocity.y *= -1;
+        }
+        if(getX() < 0 && velocity.x < 0) {
+            velocity.x *= -1;
+        }
+        if(getX() > scene.getWidth() && velocity.x > 0) {
+            velocity.x *= -1;
+        }
+
+        //Ball is off the screen
+        if(getY() > scene.getHeight() + 20) {
             //Destroy ball
             boomSound.play();
             destroy();

@@ -4,9 +4,8 @@ import net.loganford.niebreakout.BreakoutGame;
 import net.loganford.niebreakout.states.BreakoutState;
 import net.loganford.noideaengine.graphics.Image;
 import net.loganford.noideaengine.graphics.Sprite;
-import net.loganford.noideaengine.state.entity.Entity2D;
 
-public class Brick extends Entity2D<BreakoutGame, BreakoutState> {
+public class Brick extends Solid {
 
     @Override
     public void onCreate(BreakoutGame game, BreakoutState scene) {

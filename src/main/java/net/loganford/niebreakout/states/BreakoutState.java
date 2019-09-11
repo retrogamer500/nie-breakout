@@ -5,7 +5,13 @@ import net.loganford.niebreakout.entities.Ball;
 import net.loganford.niebreakout.entities.Brick;
 import net.loganford.niebreakout.entities.Paddle;
 import net.loganford.noideaengine.state.Scene;
+import net.loganford.noideaengine.state.entity.systems.RegisterSystem;
+import net.loganford.noideaengine.state.entity.systems.UnregisterSystem;
+import net.loganford.noideaengine.state.entity.systems.collision.NaiveCollisionSystem;
+import net.loganford.noideaengine.state.entity.systems.collision.SpacialPartitionCollisionSystem;
 
+@UnregisterSystem(SpacialPartitionCollisionSystem.class)
+@RegisterSystem(NaiveCollisionSystem.class)
 public class BreakoutState extends Scene<BreakoutGame> {
     @Override
     public void beginState(BreakoutGame game) {
